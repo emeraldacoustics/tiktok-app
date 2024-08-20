@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin | TikTokApp
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid text-center clearfix" style="background-color:lightgrey">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" title="TikTokApp" style="width:128px;" class="rounded-pill">
+</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" style="margin:0px;">
+    <div class="container-fluid">
+        <ul class="nav">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_home') }}" title="Home"><i class="bi bi-house-fill"></i></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_observe') }}" title="Observe"><i class="bi bi-incognito"></i></a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('admin_payments') }}" title="Payments"><i class="bi bi-card-checklist"></i></a></li>
+        </ul>
+        <ul class="nav justify-content-end">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_stripe_settings') }}" title="Stripe Settings"><i class="bi bi-gear-fill"></i></a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">{{ current_user.name }}</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('profile_update') }}"><i class="bi bi-person-circle"></i> Update</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<table class="table table-striped table-hover">
+    <thead>
+        <th>id</th>
+        <th>client_id</th>
+        <th>plan</th>
+        <th>expiration_date</th>
+        <th>note</th>
+        <th>timestamp</th>
+    </thead>
+    <tbody>
+        {% for record in payment_records %}
+        <tr>
+            <td>{{record.id}}</td>
+            <td>{{record.client_id}}</td>
+            <td>{{record.plan}}</td>
+            <td>{{record.expiration_date}}</td>
+            <td>{{record.note}}</td>
+            <td>{{record.timestamp}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

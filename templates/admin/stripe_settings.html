@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Stripe Settings | TikTokApp
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" title="TikTokApp" style="width:128px;" class="rounded-pill">
+            </div>
+            <h2 class="text-center">Stripe Settings</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.stripe_public_key.label(class="form-control-label") }}
+                    {{ form.stripe_public_key(class="form-control" + (' is-invalid' if form.stripe_public_key.errors else ''), value=stripe_public_key) }}
+                    {% if form.stripe_public_key.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.stripe_public_key.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.stripe_secret_key.label(class="form-control-label") }}
+                    {{ form.stripe_secret_key(class="form-control" + (' is-invalid' if form.stripe_secret_key.errors else ''), value=stripe_secret_key ) }}
+                    {% if form.stripe_secret_key.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.stripe_secret_key.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.stripe_webhook_secret.label(class="form-control-label") }}
+                    {{ form.stripe_webhook_secret(class="form-control" + (' is-invalid' if form.stripe_webhook_secret.errors else ''), value=stripe_webhook_secret ) }}
+                    {% if form.stripe_webhook_secret.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.stripe_webhook_secret.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+            <div class="form-group text-center">
+                <a class="btn btn-primary" href="{{ url_for('home') }}">Go home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

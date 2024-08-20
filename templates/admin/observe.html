@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Clients | TikTokApp
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid text-center clearfix" style="background-color:lightgrey">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" title="TikTokApp" style="width:128px;" class="rounded-pill">
+</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" style="margin:0px;">
+    <div class="container-fluid">
+        <ul class="nav">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_home') }}" title="Home"><i class="bi bi-house-fill"></i></a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('admin_observe') }}" title="Observe"><i class="bi bi-incognito"></i></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_payments') }}" title="Payments"><i class="bi bi-card-checklist"></i></a></li>
+        </ul>
+        <ul class="nav justify-content-end">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_stripe_settings') }}" title="Stripe Settings"><i class="bi bi-gear-fill"></i></a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">{{ current_user.name }}</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('profile_update') }}"><i class="bi bi-person-circle"></i> Update</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.email.label(class="form-control-label") }}
+        {{ form.email(class="form-control" + (' is-invalid' if form.email.errors else ''), value=client.email ) }}
+        {% if form.email.errors %}
+        <div class="invalid-feedback">
+            {{ form.email.errors[0] }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary btn-block") }}
+    </div>
+</form>
+<div class="row">
+    {% for target in targets %}
+    <div class="card col-sm-3">
+        <div class="card-header d-flex justify-content-between">
+            <div class="float-left">
+                {% if target.status %}
+                <h4 class="card-title text-primary">{{ target.tiktok_id }} <div class="spinner-grow spinner-grow-sm text-primary"></div></h4>
+                {% else %}
+                <h4 class="card-title text-muted">{{ target.tiktok_id }}</h4>
+                {% endif %}
+            </div>
+            <div class="float-right">
+                <a href="{{ url_for('client_watchtarget_edit', id=target.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pen"></i></a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div style="text-align: center; min-width:300px">
+                <svg id="svg-{{ target.id }}" width="300", height="300">
+                    <circle r="125" cx="150" cy="150" fill="none" stroke="#e9ecef" stroke-width="20" />
+                    <circle r="100" cx="150" cy="150" fill="none" stroke="#e9ecef" stroke-width="20" />
+                    <circle r="75" cx="150" cy="150" fill="none" stroke="#e9ecef" stroke-width="20" />
+                    <path id="progress1-{{ target.id }}" fill="none" stroke-linecap="round" stroke="#0dcae0" stroke-width="22" />
+                    <path id="progress2-{{ target.id }}" fill="none" stroke-linecap="round" stroke="#ffc107" stroke-width="22" />
+                    <path id="progress3-{{ target.id }}" fill="none" stroke-linecap="round" stroke="#dc3545" stroke-width="22" />
+                    <circle id="circle1-{{ target.id }}" r="11" cx="150" cy="150" fill="#0dcae0" stroke="#555555" stroke-width="1" />
+                    <circle id="circle2-{{ target.id }}" r="11" cx="150" cy="150" fill="#ffc107" stroke="#555555" stroke-width="1" />
+                    <circle id="circle3-{{ target.id }}" r="11" cx="150" cy="150" fill="#dc3545" stroke="#555555" stroke-width="1" />
+                ],
+                </svg>
+            </div>
+            <div>
+                <i class="text-info bi bi-heart-fill" title="Likes"></i>: {{ target.ring1_score }} / {{ target.ring1_goal }}
+            </div>
+            <div class="progress">
+                {% if target.ring1_score >= target.ring1_goal %}
+                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                {% else %}
+                <div class="progress-bar bg-info" style="width:{{ target.ring1_score / target.ring1_goal * 100 }}%"></div>
+                {% endif %}
+            </div>
+            <div>
+                <i class="text-warning bi bi-share-fill" title="Shares"></i>: {{ target.ring2_score }} / {{ target.ring2_goal }}
+            </div>
+            <div class="progress">
+                {% if target.ring2_score >= target.ring2_goal %}
+                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                {% else %}
+                <div class="progress-bar bg-warning" style="width:{{ target.ring2_score / target.ring2_goal * 100 }}%"></div>
+                {% endif %}
+            </div>
+            <div>
+                <i class="text-danger bi bi-tiktok" title="Coins"></i>: {{ target.ring3_score }} / {{ target.ring3_goal }}
+            </div>
+            <div class="progress">
+                {% if target.ring3_score >= target.ring3_goal %}
+                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                {% else %}
+                <div class="progress-bar bg-danger" style="width:{{ target.ring3_score / target.ring3_goal * 100 }}%"></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <div class="float-left">
+                {% if target.status %}
+                <i class="bi bi-wifi"></i>
+                {% else %}
+                <i class="bi bi-wifi-off"></i>
+                {% endif %}
+            </div>
+            <div class="float-right">
+                <a href="{{ url_for('client_watchtarget_delete', id=target.id) }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<script>
+    // Refresh the page every 5 seconds (5000 milliseconds)
+    setInterval(function() {
+        location.reload();
+    }, 15000);
+
+    {% for target in targets %}
+    for (let i = 0; i < 3; i++) {
+        let svg = document.getElementById("progress" + (i + 1) + "-{{ target.id }}");
+        let cx = 150, cy = 150;
+        let r = 125 - 25 * i;
+        let angle = 0;
+        const radian = 180 / Math.PI;
+        if (i == 0)
+            angle = Math.min(1, {{ target.ring1_score }} / {{ target.ring1_goal }})
+        else if (i == 1)
+            angle = Math.min(1, {{ target.ring2_score }} / {{ target.ring2_goal }})
+        else if (i == 2)
+            angle = Math.min(1, {{ target.ring3_score }} / {{ target.ring3_goal }})
+        angle = angle * Math.PI * 2;
+        console.log(angle);
+        let angmd = angle / 2;
+        console.log(angmd);
+        let dattr = "M " + cx + " " + (cy - r);
+        dattr += " A " + r + " " + r + " " + (angmd * radian) + " 0 1 " + (cx + r * Math.cos(angmd - Math.PI / 2)) + " " + (cy + r * Math.sin(angmd - Math.PI / 2));
+        dattr += " A " + r + " " + r + " " + (angmd * radian) + " 0 1 " + (cx + r * Math.cos(angle - Math.PI / 2)) + " " + (cy + r * Math.sin(angle - Math.PI / 2));
+        svg.setAttribute("d", dattr);
+
+        let circle = document.getElementById("circle" + (i + 1) + "-{{ target.id }}");
+        circle.setAttribute("cx", cx + r * Math.cos(angle - Math.PI / 2));
+        circle.setAttribute("cy", cy + r * Math.sin(angle - Math.PI / 2));
+    }
+    {% endfor %}
+</script>
+{% endblock content %}

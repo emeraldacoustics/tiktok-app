@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ current_user.name }} | TikTokApp
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid text-center clearfix" style="background-color:lightgrey">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" title="TikTokApp" style="width:128px;" class="rounded-pill">
+</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top" style="margin:0px;">
+    <div class="container-fluid">
+        <ul class="nav">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('client_home') }}" title="Home"><i class="bi bi-house-fill"></i></a></li>
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('client_subscribe') }}" title="Subscribe"><i class="bi bi-stripe"></i></a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('client_payments') }}" title="My Payments"><i class="bi bi-card-checklist"></i></a></li>
+        </ul>
+        <ul class="nav justify-content-end">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('client_watchtarget_add') }}" title="Add Watch Target"><i class="bi bi-person-plus-fill"></i></a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">{{ current_user.name }}</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('profile_update') }}"><i class="bi bi-person-circle"></i> Update</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="row">
+    <div class="card col-sm-3">
+        <div class="card-header d-flex justify-content-between">
+            <div class="float-left">
+                $0.5
+            </div>
+        </div>
+        <div class="card-body">
+            1 day
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <form action="{{ url_for('client_subscribe_plan', plan='day') }}" method="POST">
+                {{ day_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ day_form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card col-sm-3">
+        <div class="card-header d-flex justify-content-between">
+            <div class="float-left">
+                $3
+            </div>
+        </div>
+        <div class="card-body">
+            1 week
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <form action="{{ url_for('client_subscribe_plan', plan='week') }}" method="POST">
+                {{ week_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ week_form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card col-sm-3">
+        <div class="card-header d-flex justify-content-between">
+            <div class="float-left">
+                $10
+            </div>
+        </div>
+        <div class="card-body">
+            1 month
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <form action="{{ url_for('client_subscribe_plan', plan='month') }}" method="POST">
+                {{ month_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ month_form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card col-sm-3">
+        <div class="card-header d-flex justify-content-between">
+            <div class="float-left">
+                $100
+            </div>
+        </div>
+        <div class="card-body">
+            1 year
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <form action="{{ url_for('client_subscribe_plan', plan='year') }}" method="POST">
+                {{ year_form.hidden_tag() }}
+                <div class="form-group">
+                    {{ year_form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

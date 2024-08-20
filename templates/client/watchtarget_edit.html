@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Watch Target | TikTokApp
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" title="TikTokApp" style="width:128px;" class="rounded-pill">
+            </div>
+            <h2 class="text-center">{{target.tiktok_id}}</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.ring1_goal.label(class="form-control-label") }}
+                    {{ form.ring1_goal(class="form-control" + (' is-invalid' if form.ring1_goal.errors else ''), value=target.ring1_goal ) }}
+                    {% if form.ring1_goal.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.ring1_goal.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.ring2_goal.label(class="form-control-label") }}
+                    {{ form.ring2_goal(class="form-control" + (' is-invalid' if form.ring2_goal.errors else ''), value=target.ring2_goal ) }}
+                    {% if form.ring2_goal.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.ring2_goal.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.ring3_goal.label(class="form-control-label") }}
+                    {{ form.ring3_goal(class="form-control" + (' is-invalid' if form.ring3_goal.errors else ''), value=target.ring3_goal ) }}
+                    {% if form.ring3_goal.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.ring3_goal.errors[0] }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </form>
+            <div class="form-group text-center">
+                <a class="btn btn-primary" href="{{ url_for('home') }}">Go home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
